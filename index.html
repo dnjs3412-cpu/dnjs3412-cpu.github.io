@@ -155,7 +155,7 @@
                     <span class="w-1.5 h-5 bg-brand-blue rounded-full"></span>
                     연도별 기록 폴더
                 </h2>
-                <span class="text-xs text-slate-500">폴더를 클릭하면 업로드 날짜별 사진 타임라인으로 이동합니다.</span>
+                <span class="text-xs text-slate-500">연도를 선택한 뒤 행사 카테고리별 기록을 확인하세요.</span>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="yearFoldersGrid">
@@ -163,11 +163,23 @@
             </div>
         </div>
 
-        <!-- LEVEL 2: 특정 연도 클릭 시 들어오는 사진 타임라인 뷰 -->
+        <!-- LEVEL 2: 특정 연도의 행사 카테고리 -->
+        <div id="categoryOverviewSection" class="hidden space-y-6">
+            <div class="flex items-center gap-3 bg-slate-100 p-4 rounded-xl border border-slate-200">
+                <button onclick="resetToHome()" class="p-2 bg-white hover:bg-slate-200 rounded-lg text-slate-600 shadow-sm" aria-label="전체 연도로 돌아가기">←</button>
+                <div>
+                    <h2 class="text-lg font-bold text-brand-navy" id="selectedCategoryYearTitle"></h2>
+                    <p class="text-xs text-slate-500">카테고리를 선택하면 관련 사진 기록이 열립니다.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="categoryFoldersGrid"></div>
+        </div>
+
+        <!-- LEVEL 3: 행사 카테고리별 사진 타임라인 -->
         <div id="yearTimelineSection" class="hidden space-y-6">
             <div class="flex items-center justify-between bg-slate-100 p-4 rounded-xl border border-slate-200">
                 <div class="flex items-center gap-3">
-                    <button onclick="resetToHome()" class="p-2 bg-white hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm">
+                    <button onclick="backToCategories()" class="p-2 bg-white hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
@@ -265,6 +277,20 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">행사 카테고리 *</label>
+                    <select id="upCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                        <option value="new-year">신년식</option>
+                        <option value="presentation">부서별 발표회</option>
+                        <option value="birthday">생일잔치</option>
+                        <option value="workshop">야유회·워크숍</option>
+                        <option value="sports">체육대회</option>
+                        <option value="company-event">회사 행사</option>
+                        <option value="facility">시설·현장 기록</option>
+                        <option value="other">기타 기록</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">상세 내용 및 이력 설명</label>
                     <textarea id="upDesc" rows="3" placeholder="작업 내용이나 변경 사항을 상세히 적어주세요." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none"></textarea>
                 </div>
@@ -288,6 +314,32 @@
 
     <!-- 스크립트 로직 -->
     <script>
+        const START_YEAR = 2008;
+        const CURRENT_YEAR = new Date().getFullYear();
+        const ARCHIVE_YEARS = Array.from({ length: CURRENT_YEAR - START_YEAR + 1 }, (_, index) => String(CURRENT_YEAR - index));
+        const EVENT_CATEGORIES = [
+            { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
+            { id: 'presentation', name: '부서별 발표회', icon: 'fa-person-chalkboard', color: 'from-blue-500 to-cyan-500' },
+            { id: 'birthday', name: '생일잔치', icon: 'fa-cake-candles', color: 'from-pink-500 to-rose-500' },
+            { id: 'workshop', name: '야유회·워크숍', icon: 'fa-people-group', color: 'from-emerald-500 to-teal-500' },
+            { id: 'sports', name: '체육대회', icon: 'fa-medal', color: 'from-violet-500 to-purple-500' },
+            { id: 'company-event', name: '회사 행사', icon: 'fa-calendar-days', color: 'from-indigo-500 to-blue-600' },
+            { id: 'facility', name: '시설·현장 기록', icon: 'fa-building', color: 'from-slate-500 to-slate-700' },
+            { id: 'other', name: '기타 기록', icon: 'fa-folder', color: 'from-cyan-500 to-brand-blue' }
+        ];
+
+        function inferCategory(post) {
+            if (post.category) return post.category;
+            const text = `${post.title || ''} ${post.zone || ''} ${post.description || ''}`;
+            if (text.includes('발표회')) return 'presentation';
+            if (text.includes('신년')) return 'new-year';
+            if (text.includes('생일')) return 'birthday';
+            if (text.includes('워크숍') || text.includes('야유회')) return 'workshop';
+            if (text.includes('체육')) return 'sports';
+            if (text.includes('구역') || text.includes('시설') || text.includes('클린룸') || text.includes('창고')) return 'facility';
+            return 'other';
+        }
+
         // 초깃값 데이터 설정 (기본 예시 데이터)
         const initialPosts = [
             {
@@ -499,9 +551,12 @@
             return post;
         });
         localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
+        posts = posts.map(post => ({ ...post, category: inferCategory(post) }));
+        localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
         let isAdmin = localStorage.getItem('ulvac_is_admin') === 'true';
         let currentSelectedYear = 'ALL';
-        let selectedYearDetail = null; // null이면 연도 폴더 보기, 값이 있으면 해당 연도 타임라인 보기
+        let selectedYearDetail = null;
+        let selectedCategory = null;
         let uploadedBase64Images = [];
 
         // 페이지 초기화
@@ -533,7 +588,7 @@
         // 연도 목록 탭 생성
         function renderYearTabs() {
             const yearTabsContainer = document.getElementById('yearTabs');
-            const years = ['ALL', ...Array.from(new Set(posts.map(p => p.year))).sort((a,b) => a - b)];
+            const years = ['ALL', ...ARCHIVE_YEARS];
             
             yearTabsContainer.innerHTML = years.map(y => {
                 const label = y === 'ALL' ? '전체 연도' : `${y}년`;
@@ -545,6 +600,7 @@
         function selectYearTab(year) {
             currentSelectedYear = year;
             selectedYearDetail = year === 'ALL' ? null : year;
+            selectedCategory = null;
             renderYearTabs();
             renderView();
         }
@@ -552,6 +608,7 @@
         function resetToHome() {
             currentSelectedYear = 'ALL';
             selectedYearDetail = null;
+            selectedCategory = null;
             document.getElementById('zoneSelect').value = 'ALL';
             document.getElementById('searchInput').value = '';
             renderYearTabs();
@@ -565,6 +622,40 @@
 
         // 메인 뷰 렌더링 분기
         function renderView() {
+            const zoneFilterV2 = document.getElementById('zoneSelect').value;
+            const searchFilterV2 = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filteredV2 = posts.filter(post => {
+                const matchYear = currentSelectedYear === 'ALL' || post.year === currentSelectedYear;
+                const matchZone = zoneFilterV2 === 'ALL' || post.zone === zoneFilterV2;
+                const matchSearch = post.title.toLowerCase().includes(searchFilterV2) || post.description.toLowerCase().includes(searchFilterV2);
+                return matchYear && matchZone && matchSearch;
+            });
+            const overviewV2 = document.getElementById('yearOverviewSection');
+            const categoriesV2 = document.getElementById('categoryOverviewSection');
+            const timelineV2 = document.getElementById('yearTimelineSection');
+            const breadcrumbV2 = document.getElementById('breadcrumbCurrent');
+            const arrowV2 = document.getElementById('breadcrumbArrow');
+            overviewV2.classList.add('hidden');
+            categoriesV2.classList.add('hidden');
+            timelineV2.classList.add('hidden');
+            if (selectedYearDetail === null) {
+                overviewV2.classList.remove('hidden');
+                arrowV2.classList.add('hidden');
+                breadcrumbV2.innerText = '전체 연도 폴더';
+                renderYearFoldersGrid(filteredV2);
+            } else if (selectedCategory === null) {
+                categoriesV2.classList.remove('hidden');
+                arrowV2.classList.remove('hidden');
+                breadcrumbV2.innerText = `${selectedYearDetail}년 행사 카테고리`;
+                renderCategoryFolders(filteredV2.filter(post => post.year === selectedYearDetail));
+            } else {
+                timelineV2.classList.remove('hidden');
+                arrowV2.classList.remove('hidden');
+                const categoryV2 = EVENT_CATEGORIES.find(item => item.id === selectedCategory);
+                breadcrumbV2.innerText = `${selectedYearDetail}년 > ${categoryV2?.name || '기타 기록'}`;
+                renderYearTimeline(filteredV2.filter(post => post.year === selectedYearDetail && post.category === selectedCategory));
+            }
+            return;
             const zoneFilter = document.getElementById('zoneSelect').value;
             const searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
 
@@ -603,7 +694,7 @@
         // LEVEL 1: 연도 폴더 그리드 생성
         function renderYearFoldersGrid(filteredPosts) {
             const grid = document.getElementById('yearFoldersGrid');
-            const years = Array.from(new Set(posts.map(p => p.year))).sort((a,b) => a - b);
+            const years = ARCHIVE_YEARS;
 
             if (years.length === 0) {
                 grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">등록된 사진 기록이 없습니다.</div>`;
@@ -648,8 +739,41 @@
 
         function openYearDetail(year) {
             selectedYearDetail = year;
+            selectedCategory = null;
             currentSelectedYear = year;
             renderYearTabs();
+            renderView();
+        }
+
+        function renderCategoryFolders(yearPosts) {
+            document.getElementById('selectedCategoryYearTitle').innerText = `${selectedYearDetail}년도 행사 카테고리`;
+            const grid = document.getElementById('categoryFoldersGrid');
+            grid.innerHTML = EVENT_CATEGORIES.map(category => {
+                const categoryPosts = yearPosts.filter(post => post.category === category.id);
+                const photoCount = categoryPosts.reduce((sum, post) => sum + post.images.length, 0);
+                return `
+                    <button onclick="openCategory('${category.id}')" class="archive-card text-left bg-white rounded-2xl border border-slate-200 overflow-hidden group ${categoryPosts.length === 0 ? 'opacity-70' : ''}">
+                        <div class="h-2 bg-gradient-to-r ${category.color}"></div>
+                        <div class="p-5">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 text-brand-blue flex items-center justify-center mb-4 group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                                <i class="fa-solid ${category.icon} text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-800 group-hover:text-brand-blue">${category.name}</h3>
+                            <p class="text-xs text-slate-500 mt-2">${categoryPosts.length ? `게시글 ${categoryPosts.length}개 · 사진 ${photoCount}장` : '등록된 기록 없음'}</p>
+                        </div>
+                        <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 text-xs font-semibold text-brand-blue">기록 보기 →</div>
+                    </button>`;
+            }).join('');
+        }
+
+        function openCategory(categoryId) {
+            selectedCategory = categoryId;
+            renderView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToCategories() {
+            selectedCategory = null;
             renderView();
         }
 
@@ -657,7 +781,8 @@
         function renderYearTimeline(yearPosts) {
             const container = document.getElementById('timelineFeedContainer');
             yearPosts = [...yearPosts].sort((a, b) => a.date.localeCompare(b.date));
-            document.getElementById('selectedYearTitle').innerText = `${selectedYearDetail}년도 사진 기록`;
+            const selectedCategoryInfo = EVENT_CATEGORIES.find(item => item.id === selectedCategory);
+            document.getElementById('selectedYearTitle').innerText = `${selectedYearDetail}년 ${selectedCategoryInfo?.name || '기타 기록'}`;
             document.getElementById('selectedYearCount').innerText = `총 ${yearPosts.length}개의 타임라인 피드`;
 
             if (yearPosts.length === 0) {
@@ -823,6 +948,7 @@
             const title = document.getElementById('upTitle').value;
             const date = document.getElementById('upDate').value;
             const zone = document.getElementById('upZone').value;
+            const category = document.getElementById('upCategory').value;
             const desc = document.getElementById('upDesc').value;
             const year = date.substring(0, 4);
 
@@ -831,6 +957,7 @@
                 year: year,
                 date: date,
                 zone: zone,
+                category: category,
                 title: title,
                 description: desc,
                 author: "관리자(시설팀)",
@@ -845,6 +972,7 @@
             
             // 등록된 연도로 자동 이동
             selectedYearDetail = year;
+            selectedCategory = category;
             currentSelectedYear = year;
             renderView();
 
