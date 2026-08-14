@@ -1,86 +1,865 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ATI-K Technology Center HISTORY</title>
-
+    <title>한국알박 - 사진 기록 관리 시스템</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-family/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Noto Sans KR & Montserrat) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#002B49',
+                            blue: '#0066B2',
+                            accent: '#00A8CC',
+                            dark: '#0F172A',
+                            light: '#F8FAFC',
+                            gray: '#64748B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', '"Montserrat"', 'sans-serif'],
+                        en: ['"Montserrat"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: #222;
-            background: white;
-        }
-
-        nav {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
-        nav a {
-            margin: 0 20px;
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-        }
-
-        .main {
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #f5f6f8;
-            text-align: center;
-        }
-
-        .main h1 {
-            font-size: 46px;
-            margin-bottom: 10px;
-        }
-
-        .main p {
-            font-size: 20px;
-            color: #666;
-        }
-
-        .history {
-            max-width: 1000px;
-            margin: auto;
-            padding: 70px 30px;
-            text-align: center;
-        }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .glass-header { background: rgba(0, 43, 73, 0.95); backdrop-filter: blur(10px); }
+        .archive-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .archive-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -6px rgba(0, 43, 73, 0.12); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F1F5F9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
     </style>
 </head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-blue selection:text-white">
 
-<body>
+    <!-- 글로벌 네비게이션 바 (한국알박 스타일 + 사진 관리 대시보드 메뉴 추가) -->
+    <header class="glass-header text-white sticky top-0 z-40 border-b border-slate-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- 로고 & 브랜드 -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="resetToHome()">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-brand-blue to-brand-accent rounded-lg flex items-center justify-center font-en font-extrabold text-xl tracking-tighter shadow-inner">
+                        UL
+                    </div>
+                    <div>
+                        <div class="font-en font-bold text-lg tracking-wider text-white leading-none">ULVAC</div>
+                        <div class="text-xs text-brand-accent font-medium mt-0.5 tracking-tight">한국알박 Archive</div>
+                    </div>
+                </div>
 
-<nav>
-    <a href="#">HOME</a>
-    <a href="#">HISTORY</a>
-    <a href="#">R&D</a>
-    <a href="#">TECHNOLOGY EXCHANGE</a>
-    <a href="#">CONFERENCE</a>
-    <a href="#">GALLERY</a>
-</nav>
+                <!-- 데스크탑 주 메뉴 (한국알박 헤더 스타일 반영) -->
+                <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-300">
+                    <a href="#" class="hover:text-white transition-colors">ATI 정보</a>
+                    <a href="#" class="hover:text-white transition-colors">월별소식지</a>
+                    <a href="#" class="hover:text-white transition-colors">공지사항</a>
+                    <a href="#" class="hover:text-white transition-colors">고객센터</a>
+                    <!-- 추가된 혁신 메뉴 -->
+                    <a href="#" onclick="resetToHome(); return false;" class="text-white bg-brand-blue/80 hover:bg-brand-blue px-3.5 py-2 rounded-full font-semibold border border-brand-accent/30 flex items-center gap-2 shadow-sm transition-all">
+                        <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        사진기록 대시보드
+                    </a>
+                </nav>
 
-<div class="main">
-    <h1>ATI-K TECHNOLOGY CENTER</h1>
-    <p>Innovation · Technology · History</p>
-</div>
+                <!-- 관리자 인증 영역 -->
+                <div class="flex items-center gap-3">
+                    <div id="adminBadge" class="hidden flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs px-3 py-1.5 rounded-full font-medium">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        관리자 권한 활성
+                    </div>
+                    <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center gap-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg border border-slate-700 transition-all font-medium">
+                        <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span id="authBtnText">관리자 로그인</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<div class="history">
-    <h2>OUR HISTORY</h2>
+    <!-- 메인 비주얼 배너 -->
+    <section class="bg-gradient-to-r from-brand-navy via-slate-900 to-brand-navy text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#00A8CC_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-accent/20 text-brand-accent mb-3 border border-brand-accent/30">
+                    ATI 기록 & ATI 소식지
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">한국알박 히스토리 & 사진 관리 </h1>
+                <p class="text-slate-400 text-sm mt-2 max-w-2xl leading-relaxed">
+                    ATI-KOREA 연도별, 날짜별, 구역별 현장 변경 사진과 주요 히스토리를 타임라인 형태로 안전하게 보존하고 관리합니다.
+                </p>
+            </div>
+            <!-- 관리자 전용 업로드 버튼 -->
+            <div id="uploadBtnContainer" class="hidden">
+                <button onclick="openUploadModal()" class="w-full md:w-auto bg-gradient-to-r from-brand-blue to-brand-accent hover:from-blue-600 hover:to-cyan-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-brand-blue/30 flex items-center justify-center gap-2 transition-all transform active:scale-95">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    새 사진 게시글 작성
+                </button>
+            </div>
+        </div>
+    </section>
 
-    <p>
-        ATI-K Technology Center의<br>
-        연구개발 활동과 주요 순간을 기록합니다.
-    </p>
-</div>
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
 
+        <!-- 브레드크럼 (현재 위치) -->
+        <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6 font-medium">
+            <span class="cursor-pointer hover:text-brand-blue" onclick="resetToHome()">대시보드 홈</span>
+            <span id="breadcrumbArrow" class="hidden">&gt;</span>
+            <span id="breadcrumbCurrent" class="text-slate-800 font-semibold">전체 보기</span>
+        </nav>
+
+        <!-- 필터 & 검색 바 -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <!-- 연도 탭 버튼 -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 custom-scrollbar" id="yearTabs">
+                <!-- JS dynamic generation -->
+            </div>
+
+            <!-- 구역 필터 & 검색어 -->
+            <div class="flex items-center gap-3">
+                <select id="zoneSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue font-medium">
+                    <option value="ALL">전체 구역 보기</option>
+                    <option value="A구역 (메인 클린룸)">A구역 (메인 클린룸)</option>
+                    <option value="26년_신년회">26년_신년회</option>
+                    <option value="25년_신년회">25년_신년회</option>
+                    <option value="B구역 (조립 라인)">B구역 (조립 라인)</option>
+                    <option value="C구역 (물류 창고)">C구역 (물류 창고)</option>
+                    <option value="외곽 (외부 시설)">외곽 (외부 시설)</option>
+                </select>
+
+                <div class="relative flex-1 sm:w-64">
+                    <input type="text" id="searchInput" onkeyup="applyFilters()" placeholder="제목 또는 설명 검색..." class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue placeholder:text-slate-400">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEVEL 1: 연도별 요약 앨범 카드 뷰 (초기 화면) -->
+        <div id="yearOverviewSection" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-1.5 h-5 bg-brand-blue rounded-full"></span>
+                    연도별 기록 폴더
+                </h2>
+                <span class="text-xs text-slate-500">폴더를 클릭하면 업로드 날짜별 사진 타임라인으로 이동합니다.</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="yearFoldersGrid">
+                <!-- JS dynamic generation -->
+            </div>
+        </div>
+
+        <!-- LEVEL 2: 특정 연도 클릭 시 들어오는 사진 타임라인 뷰 -->
+        <div id="yearTimelineSection" class="hidden space-y-6">
+            <div class="flex items-center justify-between bg-slate-100 p-4 rounded-xl border border-slate-200">
+                <div class="flex items-center gap-3">
+                    <button onclick="resetToHome()" class="p-2 bg-white hover:bg-slate-200 rounded-lg text-slate-600 transition-colors shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </button>
+                    <div>
+                        <h2 class="text-lg font-bold text-brand-navy" id="selectedYearTitle">2026년도 타임라인</h2>
+                        <p class="text-xs text-slate-500" id="selectedYearCount">총 0개의 날짜별 기록</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 날짜별 사진 타임라인 카드 목록 -->
+            <div class="max-w-3xl mx-auto space-y-8" id="timelineFeedContainer">
+                <!-- JS dynamic generation -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-brand-navy text-slate-400 text-xs py-8 border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-en font-semibold text-slate-300">ULVAC Korea Facility Archive System</p>
+            <p>© 한국알박(주) 모든 권리 보유. 본 시스템은 사내 시설 및 히스토리 관리 전용 시스템입니다.</p>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: 사진 원본 크게 보기 모달 (Lightbox) -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <button onclick="closeImageModal()" class="absolute top-5 right-5 text-white/80 hover:text-white p-2 text-2xl font-bold z-10 transition-colors">
+            ✕
+        </button>
+        <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
+            <img id="modalImg" src="" alt="확대 이미지" class="max-h-[75vh] w-auto object-contain rounded-lg shadow-2xl border border-white/10">
+            <div class="mt-4 text-center text-white space-y-1">
+                <h3 id="modalCaption" class="text-lg font-bold"></h3>
+                <p id="modalSub" class="text-sm text-slate-300 font-light"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: 관리자 로그인 모달 -->
+    <div id="authModal" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">관리자 인증</h3>
+                <p class="text-xs text-slate-500 mt-1">업로드 권한을 얻으려면 암호를 입력하세요.</p>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">관리자 암호 (초기암호: admin1234)</label>
+                    <input type="password" id="adminPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="toggleAuthModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs py-2.5 rounded-xl font-semibold transition-colors">취소</button>
+                    <button type="submit" class="flex-1 bg-brand-blue hover:bg-blue-700 text-white text-xs py-2.5 rounded-xl font-semibold transition-colors shadow-md shadow-brand-blue/20">인증하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: 관리자 전용 사진 게시글 업로드 모달 -->
+    <div id="uploadModal" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brand-blue"></span>
+                    신규 사진 기록 작성
+                </h3>
+                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+            </div>
+            <form onsubmit="handleUploadSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">게시글 제목 *</label>
+                    <input type="text" id="upTitle" required placeholder="예: A구역 클린룸 공조기 교체 완료" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">업로드 날짜 *</label>
+                        <input type="date" id="upDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">작업 구역 *</label>
+                        <select id="upZone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                            <option value="A구역 (메인 클린룸)">A구역 (메인 클린룸)</option>
+                            <option value="26년_신년회">26년_신년회</option>
+                            <option value="25년_신년회">25년_신년회</option>
+                            <option value="B구역 (조립 라인)">B구역 (조립 라인)</option>
+                            <option value="C구역 (물류 창고)">C구역 (물류 창고)</option>
+                            <option value="외곽 (외부 시설)">외곽 (외부 시설)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">상세 내용 및 이력 설명</label>
+                    <textarea id="upDesc" rows="3" placeholder="작업 내용이나 변경 사항을 상세히 적어주세요." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">사진 파일 첨부 (다중 가능)</label>
+                    <input type="file" id="upFiles" multiple accept="image/*" onchange="previewImages(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-blue/10 file:text-brand-blue hover:file:bg-brand-blue/20 cursor-pointer">
+                    <p class="text-[11px] text-slate-400 mt-1">* 개인 PC의 로컬 이미지 파일을 선택하면 대시보드에 즉시 반영됩니다.</p>
+                </div>
+
+                <!-- 미리보기 영역 -->
+                <div id="previewContainer" class="grid grid-cols-4 gap-2 pt-2"></div>
+
+                <div class="flex gap-2 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeUploadModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs py-2.5 rounded-xl font-semibold">취소</button>
+                    <button type="submit" class="flex-1 bg-brand-blue hover:bg-blue-700 text-white text-xs py-2.5 rounded-xl font-semibold shadow-md shadow-brand-blue/20">게시글 저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 스크립트 로직 -->
+    <script>
+        // 초깃값 데이터 설정 (기본 예시 데이터)
+        const initialPosts = [
+            {
+                id: 1,
+                year: "2026",
+                date: "2026-03-15",
+                zone: "ATI",
+                title: "ATI",
+                description: "ATI.",
+                author: "ATI",
+                images: [
+                    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 2,
+                year: "2026",
+                date: "2026-01-20",
+                zone: "26년_신년회",
+                title: "ATI_K 부서별 신년발표회",
+                description: "ATI-K 신년발표회를 통하여 26년도 목표와 비전을 제시하였습니다.",
+                author: "ATI-KOREA",
+                images: [
+                    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 3,
+                year: "2025",
+                date: "2025-11-08",
+                zone: "25년_신년회",
+                title: "ATI_K 부서별 신년발표회",
+                description: "ATI-K 신년발표회를 통하여 25년도 목표와 비전을 제시하였습니다.",
+                author: "ATI-KOREA",
+                images: [
+                    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 4,
+                year: "2025",
+                date: "2025-06-12",
+                zone: "연구소_신년회",
+                title: "ATI-K 신년식",
+                description: "ATI-K 신년발표회를 통하여  25년도 목표와 비전을 제시하였습니다.",
+                author: "ATI",
+                images: [
+                    "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=800&q=80"
+                ]
+            }
+        ];
+
+        const ati2026Images = [
+            "image/2026년/20260714_134003.jpg",
+            "image/2026년/20260714_134006.jpg",
+            "image/2026년/20260714_134011.jpg",
+            "image/2026년/20260714_134016.jpg",
+            "image/2026년/20260714_135559.jpg",
+            "image/2026년/20260714_135600.jpg",
+            "image/2026년/20260714_135814.jpg",
+            "image/2026년/20260714_135816.jpg",
+            "image/2026년/20260714_135831.jpg",
+            "image/2026년/20260714_140149.jpg",
+            "image/2026년/20260714_140152.jpg",
+            "image/2026년/20260714_140154.jpg",
+            "image/2026년/20260714_140212.jpg",
+            "image/2026년/20260714_140216.jpg",
+            "image/2026년/20260714_141107.jpg",
+            "image/2026년/20260714_141109.jpg",
+            "image/2026년/20260714_141122.jpg",
+            "image/2026년/20260714_141123.jpg",
+            "image/2026년/20260714_141125.jpg",
+            "image/2026년/20260714_141151.jpg",
+            "image/2026년/20260714_141152.jpg",
+            "image/2026년/20260714_141159.jpg",
+            "image/2026년/20260714_141201.jpg",
+            "image/2026년/20260714_141204.jpg",
+            "image/2026년/20260714_141206.jpg",
+            "image/2026년/20260714_141228.jpg",
+            "image/2026년/20260714_141230.jpg",
+            "image/2026년/20260714_141241.jpg",
+            "image/2026년/20260714_141242.jpg",
+            "image/2026년/20260714_141304.jpg",
+            "image/2026년/20260714_141306.jpg",
+            "image/2026년/20260714_141307.jpg",
+            "image/2026년/20260714_141308.jpg",
+            "image/2026년/20260714_141349.jpg",
+            "image/2026년/20260714_141352.jpg",
+            "image/2026년/20260714_141353.jpg",
+            "image/2026년/20260714_141411.jpg",
+            "image/2026년/20260714_141413.jpg",
+            "image/2026년/20260714_141708.jpg",
+            "image/2026년/20260714_142815.jpg",
+            "image/2026년/20260714_142834.jpg",
+            "image/2026년/20260714_142838.jpg",
+            "image/2026년/20260714_142843.jpg",
+            "image/2026년/20260714_142914.jpg",
+            "image/2026년/20260714_142917.jpg",
+            "image/2026년/20260714_144130.jpg",
+            "image/2026년/20260714_144132.jpg",
+            "image/2026년/20260714_144300.jpg",
+            "image/2026년/20260714_144302.jpg",
+            "image/2026년/20260714_144856.jpg",
+            "image/2026년/20260714_144857.jpg",
+            "image/2026년/20260714_145141.jpg",
+            "image/2026년/20260714_145659.jpg",
+            "image/2026년/20260714_145702.jpg",
+            "image/2026년/20260714_150141.jpg",
+            "image/2026년/20260714_150513.jpg",
+            "image/2026년/20260714_150517.jpg",
+            "image/2026년/20260714_150803.jpg",
+            "image/2026년/20260714_151337.jpg",
+            "image/2026년/20260714_151340.jpg",
+            "image/2026년/20260714_151648.jpg",
+            "image/2026년/20260714_151650.jpg",
+            "image/2026년/20260714_151651.jpg",
+            "image/2026년/20260714_152125.jpg",
+            "image/2026년/20260714_152128.jpg",
+            "image/2026년/20260714_152135.jpg",
+            "image/2026년/20260714_152147.jpg",
+            "image/2026년/20260714_152153.jpg",
+            "image/2026년/20260714_152248.jpg",
+            "image/2026년/20260714_152250.jpg",
+            "image/2026년/20260714_152855.jpg",
+            "image/2026년/20260714_152857.jpg",
+            "image/2026년/20260714_152901.jpg",
+            "image/2026년/20260714_152905.jpg",
+            "image/2026년/20260714_152910.jpg",
+            "image/2026년/20260714_152923.jpg",
+            "image/2026년/20260714_153737.jpg",
+            "image/2026년/20260714_153739.jpg",
+            "image/2026년/20260714_153742.jpg",
+            "image/2026년/20260714_154554.jpg",
+            "image/2026년/20260714_154557.jpg",
+            "image/2026년/20260714_155511.jpg",
+            "image/2026년/20260714_155544.jpg",
+            "image/2026년/20260714_155546.jpg",
+            "image/2026년/20260714_155547.jpg",
+            "image/2026년/20260714_155548.jpg",
+            "image/2026년/20260714_155608.jpg",
+            "image/2026년/20260714_155609.jpg",
+            "image/2026년/20260714_155610(0).jpg",
+            "image/2026년/20260714_155610.jpg",
+            "image/2026년/20260714_155613.jpg"
+        ];
+
+        const ati2025Images = [
+            "image/2025년/미디어 (16).jfif",
+            "image/2025년/미디어 (17).jfif",
+            "image/2025년/미디어 (18).jfif",
+            "image/2025년/미디어 (19).jfif",
+            "image/2025년/미디어 (20).jfif",
+            "image/2025년/미디어 (21).jfif",
+            "image/2025년/미디어 (22).jfif",
+            "image/2025년/미디어 (23).jfif",
+            "image/2025년/미디어 (24).jfif",
+            "image/2025년/미디어 (25).jfif",
+            "image/2025년/미디어 (26).jfif",
+            "image/2025년/미디어 (27).jfif",
+            "image/2025년/미디어 (28).jfif",
+            "image/2025년/미디어 (29).jfif",
+            "image/2025년/미디어 (30).jfif",
+            "image/2025년/미디어 (31).jfif",
+            "image/2025년/미디어 (32).jfif",
+            "image/2025년/미디어 (33).jfif",
+            "image/2025년/미디어 (34).jfif",
+            "image/2025년/미디어 (35).jfif",
+            "image/2025년/미디어 (36).jfif"
+        ];
+
+        // 로컬 스토리지 상태 및 앱 변수
+        let posts = JSON.parse(localStorage.getItem('ulvac_dashboard_posts')) || initialPosts;
+        const atiSplitIndex = Math.ceil(ati2026Images.length / 2);
+        const ati2025SplitIndex = Math.ceil(ati2025Images.length / 2);
+        posts = posts.map(post => {
+            if (post.year === "2026" && post.title === "ATI") {
+                return { ...post, images: ati2026Images.slice(0, atiSplitIndex) };
+            }
+            if (post.year === "2026" && (post.title === "ATI" || post.title === "ATI_K 부서별 신년발표회")) {
+                return {
+                    ...post,
+                    zone: "26년_신년회",
+                    title: "ATI_K 부서별 신년발표회",
+                    description: "ATI-K 신년발표회를 통하여 \ 26년도 목표와 비전을 제시하였습니다.",
+                    author: "ATI-KOREA",
+                    images: ati2026Images.slice(atiSplitIndex)
+                };
+            }
+            if (post.year === "2025" && (post.title === "C구역 파렛트 렉 증설 및 슬로프 도장" || post.title === "ATI_K 부서별 신년발표회")) {
+                return {
+                    ...post,
+                    zone: "25년_신년회",
+                    title: "ATI_K 부서별 신년발표회",
+                    description: "ATI-K 신년발표회를 통하여 25년도 25년도 목표와 비전을 제시하였습니다.",
+                    author: "ATI-KOREA",
+                    images: ati2025Images.slice(0, ati2025SplitIndex)
+                };
+            }
+            if (post.year === "2025" && (post.id === 4 || post.title === "ATI-KOREA 화이팅!!" || post.title === "ATI-K 신년식" || post.title === "ATI_K 부서별 신년발표회")) {
+                return {
+                    ...post,
+                    description: "ATI-K 신년발표회를 통하여 25년도 25년도 목표와 비전을 제시하였습니다.",
+                    author: "ATI",
+                    images: ati2025Images.slice(ati2025SplitIndex)
+                };
+            }
+            return post;
+        });
+        localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
+        let isAdmin = localStorage.getItem('ulvac_is_admin') === 'true';
+        let currentSelectedYear = 'ALL';
+        let selectedYearDetail = null; // null이면 연도 폴더 보기, 값이 있으면 해당 연도 타임라인 보기
+        let uploadedBase64Images = [];
+
+        // 페이지 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+            renderYearTabs();
+            renderView();
+            // 오늘 날짜 세팅
+            document.getElementById('upDate').value = new Date().toISOString().substring(0, 10);
+        });
+
+        // 권한 UI 상태 업데이트
+        function updateAuthUI() {
+            const badge = document.getElementById('adminBadge');
+            const uploadBtn = document.getElementById('uploadBtnContainer');
+            const authBtnText = document.getElementById('authBtnText');
+
+            if (isAdmin) {
+                badge.classList.remove('hidden');
+                uploadBtn.classList.remove('hidden');
+                authBtnText.innerText = '로그아웃';
+            } else {
+                badge.classList.add('hidden');
+                uploadBtn.classList.add('hidden');
+                authBtnText.innerText = '관리자 로그인';
+            }
+        }
+
+        // 연도 목록 탭 생성
+        function renderYearTabs() {
+            const yearTabsContainer = document.getElementById('yearTabs');
+            const years = ['ALL', ...Array.from(new Set(posts.map(p => p.year))).sort((a,b) => a - b)];
+            
+            yearTabsContainer.innerHTML = years.map(y => {
+                const label = y === 'ALL' ? '전체 연도' : `${y}년`;
+                const activeClass = currentSelectedYear === y ? 'bg-brand-navy text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-600';
+                return `<button onclick="selectYearTab('${y}')" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${activeClass}">${label}</button>`;
+            }).join('');
+        }
+
+        function selectYearTab(year) {
+            currentSelectedYear = year;
+            selectedYearDetail = year === 'ALL' ? null : year;
+            renderYearTabs();
+            renderView();
+        }
+
+        function resetToHome() {
+            currentSelectedYear = 'ALL';
+            selectedYearDetail = null;
+            document.getElementById('zoneSelect').value = 'ALL';
+            document.getElementById('searchInput').value = '';
+            renderYearTabs();
+            renderView();
+        }
+
+        // 전체 필터링 적용 및 화면 렌더링
+        function applyFilters() {
+            renderView();
+        }
+
+        // 메인 뷰 렌더링 분기
+        function renderView() {
+            const zoneFilter = document.getElementById('zoneSelect').value;
+            const searchFilter = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            // 데이터 필터링
+            let filtered = posts.filter(post => {
+                const matchYear = (currentSelectedYear === 'ALL') || (post.year === currentSelectedYear);
+                const matchZone = (zoneFilter === 'ALL') || (post.zone === zoneFilter);
+                const matchSearch = (post.title.toLowerCase().includes(searchFilter)) || (post.description.toLowerCase().includes(searchFilter));
+                return matchYear && matchZone && matchSearch;
+            });
+
+            const overviewSec = document.getElementById('yearOverviewSection');
+            const timelineSec = document.getElementById('yearTimelineSection');
+            const breadcrumbCurrent = document.getElementById('breadcrumbCurrent');
+            const breadcrumbArrow = document.getElementById('breadcrumbArrow');
+
+            if (selectedYearDetail === null) {
+                // LEVEL 1: 연도 폴더 보기
+                overviewSec.classList.remove('hidden');
+                timelineSec.classList.add('hidden');
+                breadcrumbArrow.classList.add('hidden');
+                breadcrumbCurrent.innerText = '전체 연도 폴더';
+
+                renderYearFoldersGrid(filtered);
+            } else {
+                // LEVEL 2: 사진 타임라인 보기
+                overviewSec.classList.add('hidden');
+                timelineSec.classList.remove('hidden');
+                breadcrumbArrow.classList.remove('hidden');
+                breadcrumbCurrent.innerText = `${selectedYearDetail}년 타임라인 피드`;
+
+                renderYearTimeline(filtered.filter(p => p.year === selectedYearDetail));
+            }
+        }
+
+        // LEVEL 1: 연도 폴더 그리드 생성
+        function renderYearFoldersGrid(filteredPosts) {
+            const grid = document.getElementById('yearFoldersGrid');
+            const years = Array.from(new Set(posts.map(p => p.year))).sort((a,b) => a - b);
+
+            if (years.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">등록된 사진 기록이 없습니다.</div>`;
+                return;
+            }
+
+            grid.innerHTML = years.map(yr => {
+                const yearPosts = filteredPosts.filter(p => p.year === yr);
+                const count = yearPosts.reduce((acc, p) => acc + p.images.length, 0);
+                const postCount = yearPosts.length;
+                
+                // 대표 썸네일 추출
+                const latestImg = yearPosts[0]?.images[0] || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
+
+                return `
+                    <div onclick="openYearDetail('${yr}')" class="archive-card bg-white rounded-2xl overflow-hidden border border-slate-200 cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden bg-slate-100">
+                                <img src="${latestImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="${yr}">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
+                                <span class="absolute bottom-3 left-4 bg-brand-blue/90 text-white font-en font-bold text-xl px-3 py-1 rounded-lg backdrop-blur-sm">
+                                    ${yr}년
+                                </span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-slate-800 text-base group-hover:text-brand-blue transition-colors">
+                                    ${yr === '2026' ? '2026년 ATI&히스토리' : `${yr}년도 ATI & 히스토리`}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-2">
+                                    <span>게시글 ${postCount}개</span> • <span>사진 총 ${count}장</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-blue">
+                            <span>사진 타임라인 열기</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openYearDetail(year) {
+            selectedYearDetail = year;
+            currentSelectedYear = year;
+            renderYearTabs();
+            renderView();
+        }
+
+        // LEVEL 2: 날짜별 사진 타임라인 생성
+        function renderYearTimeline(yearPosts) {
+            const container = document.getElementById('timelineFeedContainer');
+            yearPosts = [...yearPosts].sort((a, b) => a.date.localeCompare(b.date));
+            document.getElementById('selectedYearTitle').innerText = `${selectedYearDetail}년도 사진 기록`;
+            document.getElementById('selectedYearCount').innerText = `총 ${yearPosts.length}개의 타임라인 피드`;
+
+            if (yearPosts.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-200">해당 필터 조건에 일치하는 사진 기록이 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = yearPosts.map(post => {
+                // 이미지 레이아웃 (1개, 2개, 3개 이상 분기 처리)
+                let imageGrid = '';
+                const imgs = post.images;
+
+                if (imgs.length === 1) {
+                    imageGrid = `
+                        <div class="rounded-xl overflow-hidden cursor-pointer" onclick="openImageModal('${imgs[0]}', '${post.title}', '${post.date}')">
+                            <img src="${imgs[0]}" class="w-full max-h-96 object-cover hover:opacity-95 transition-opacity">
+                        </div>
+                    `;
+                } else if (imgs.length === 2) {
+                    imageGrid = `
+                        <div class="grid grid-cols-2 gap-2">
+                            ${imgs.map(img => `
+                                <div class="rounded-xl overflow-hidden cursor-pointer h-56" onclick="openImageModal('${img}', '${post.title}', '${post.date}')">
+                                    <img src="${img}" class="w-full h-full object-cover hover:opacity-95 transition-opacity">
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    imageGrid = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            ${imgs.map(img => `
+                                <div class="relative rounded-xl overflow-hidden cursor-pointer bg-slate-100" onclick="openImageModal('${img}', '${post.title}', '${post.date}')">
+                                    <img src="${img}" class="w-full aspect-[4/3] object-cover hover:opacity-95 transition-opacity" loading="lazy">
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <article class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+                        <!-- Header: 작성자 & 날짜 -->
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-brand-navy/10 text-brand-navy font-bold flex items-center justify-center text-xs">
+                                    ${post.author === 'ATI' ? 'ATI' : post.author.substring(0, 2)}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm">${post.author}</div>
+                                    <div class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
+                                        <span>업로드 날짜: ${post.date}</span>
+                                        <span>•</span>
+                                        <span class="text-brand-blue font-medium">${post.zone}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${isAdmin ? `
+                                <button onclick="deletePost(${post.id})" class="text-xs text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1.5 rounded-lg transition-colors">
+                                    삭제
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <!-- Content: 제목 & 설명 -->
+                        <div class="space-y-2">
+                            <h3 class="text-base font-bold text-slate-900">${post.title}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">${post.description}</p>
+                        </div>
+
+                        <!-- Gallery Section -->
+                        <div class="pt-2">
+                            ${imageGrid}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // 이미지 모달 열기
+        function openImageModal(imgSrc, title, date) {
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('modalCaption').innerText = title;
+            document.getElementById('modalSub').innerText = `촬영 및 등록일자: ${date}`;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        // 관리자 인증 모달 처리
+        function toggleAuthModal() {
+            if (isAdmin) {
+                if (confirm('관리자 권한을 해제하시겠습니까?')) {
+                    isAdmin = false;
+                    localStorage.setItem('ulvac_is_admin', 'false');
+                    updateAuthUI();
+                    renderView();
+                }
+            } else {
+                document.getElementById('authModal').classList.remove('hidden');
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const pw = document.getElementById('adminPassword').value;
+            if (pw === 'admin1234') {
+                isAdmin = true;
+                localStorage.setItem('ulvac_is_admin', 'true');
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('adminPassword').value = '';
+                updateAuthUI();
+                renderView();
+                alert('관리자로 인증되었습니다. 이제 사진 및 타임라인을 등록할 수 있습니다.');
+            } else {
+                alert('비밀번호가 올바르지 않습니다. (기본 비밀번호: admin1234)');
+            }
+        }
+
+        // 업로드 모달 관련 logic
+        function openUploadModal() {
+            uploadedBase64Images = [];
+            document.getElementById('previewContainer').innerHTML = '';
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+        }
+
+        // 로컬 사진 파일 Base64 변환 미리보기
+        function previewImages(e) {
+            const files = Array.from(e.target.files);
+            const container = document.getElementById('previewContainer');
+            container.innerHTML = '';
+            uploadedBase64Images = [];
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const base64 = event.target.result;
+                    uploadedBase64Images.push(base64);
+                    
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'h-16 rounded-lg overflow-hidden border border-slate-200';
+                    imgDiv.innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+                    container.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 새 글 업로드 저장
+        function handleUploadSubmit(e) {
+            e.preventDefault();
+            if (uploadedBase64Images.length === 0) {
+                alert('최소 1장 이상의 사진 파일을 첨부해 주세요.');
+                return;
+            }
+
+            const title = document.getElementById('upTitle').value;
+            const date = document.getElementById('upDate').value;
+            const zone = document.getElementById('upZone').value;
+            const desc = document.getElementById('upDesc').value;
+            const year = date.substring(0, 4);
+
+            const newPost = {
+                id: Date.now(),
+                year: year,
+                date: date,
+                zone: zone,
+                title: title,
+                description: desc,
+                author: "관리자(시설팀)",
+                images: uploadedBase64Images
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
+
+            closeUploadModal();
+            renderYearTabs();
+            
+            // 등록된 연도로 자동 이동
+            selectedYearDetail = year;
+            currentSelectedYear = year;
+            renderView();
+
+            alert('신규 사진 기록이 성공적으로 추가되었습니다!');
+        }
+
+        // 게시글 삭제
+        function deletePost(id) {
+            if (confirm('이 사진 기록 게시글을 정말 삭제하시겠습니까?')) {
+                posts = posts.filter(p => p.id !== id);
+                localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
+                renderYearTabs();
+                renderView();
+            }
+        }
+    </script>
 </body>
 </html>
