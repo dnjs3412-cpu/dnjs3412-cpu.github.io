@@ -66,7 +66,6 @@
                     <a href="#" class="hover:text-white transition-colors">ATI 사진</a>
                     <a href="#" class="hover:text-white transition-colors">월별소식지</a>
                     <a href="#" class="hover:text-white transition-colors">공지사항</a>
-                    <a href="#" class="hover:text-white transition-colors">고객센터</a>
                     <!-- 추가된 혁신 메뉴 -->
                     <a href="#" onclick="resetToHome(); return false;" class="text-white bg-brand-blue/80 hover:bg-brand-blue px-3.5 py-2 rounded-full font-semibold border border-brand-accent/30 flex items-center gap-2 shadow-sm transition-all">
                         <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
@@ -132,7 +131,7 @@
             <!-- 구역 필터 & 검색어 -->
             <div class="flex items-center gap-3">
                 <select id="zoneSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue font-medium">
-                    <option value="ALL">전체 구역 보기 (전체 연도)</option>
+                    <option value="ALL">전체 연도</option>
                     <option value="A구역 (메인 클린룸)">A구역 (메인 클린룸)</option>
                     <option value="26년_신년회">26년_신년회</option>
                     <option value="25년_신년회">25년_신년회</option>
@@ -488,6 +487,94 @@
             "image/2026년/20260714_155613.jpg"
         ];
 
+        const newYear2026Images = [
+            "image/2026년 신년회/20260120_신년회_001.jpg",
+            "image/2026년 신년회/20260120_신년회_006.jpg",
+            "image/2026년 신년회/20260120_신년회_007.jpg",
+            "image/2026년 신년회/20260120_신년회_008.jpg",
+            "image/2026년 신년회/20260120_신년회_010.jpg",
+            "image/2026년 신년회/20260120_신년회_011.jpg",
+            "image/2026년 신년회/20260120_신년회_012.jpg",
+            "image/2026년 신년회/20260120_신년회_013.jpg",
+            "image/2026년 신년회/20260120_신년회_015.jpg",
+            "image/2026년 신년회/20260120_신년회_016.jpg",
+            "image/2026년 신년회/20260120_신년회_017.jpg",
+            "image/2026년 신년회/20260120_신년회_018.jpg",
+            "image/2026년 신년회/20260120_신년회_019.jpg",
+            "image/2026년 신년회/20260120_신년회_020.jpg",
+            "image/2026년 신년회/20260120_신년회_021.jpg",
+            "image/2026년 신년회/20260120_신년회_022.jpg",
+            "image/2026년 신년회/20260120_신년회_023.jpg",
+            "image/2026년 신년회/20260120_신년회_024.jpg",
+            "image/2026년 신년회/20260120_신년회_025.jpg",
+            "image/2026년 신년회/20260120_신년회_026.jpg",
+            "image/2026년 신년회/20260120_신년회_027.jpg",
+            "image/2026년 신년회/20260120_신년회_028.jpg",
+            "image/2026년 신년회/20260120_신년회_029.jpg",
+            "image/2026년 신년회/20260120_신년회_030.jpg",
+            "image/2026년 신년회/20260120_신년회_031.jpg",
+            "image/2026년 신년회/20260120_신년회_032.jpg",
+            "image/2026년 신년회/20260120_신년회_033.jpg",
+            "image/2026년 신년회/20260120_신년회_034.jpg",
+            "image/2026년 신년회/20260120_신년회_035.jpg",
+            "image/2026년 신년회/20260120_신년회_036.jpg",
+            "image/2026년 신년회/20260120_신년회_037.jpg",
+            "image/2026년 신년회/20260120_신년회_038.jpg",
+            "image/2026년 신년회/20260120_신년회_039.jpg",
+            "image/2026년 신년회/20260120_신년회_040.jpg",
+            "image/2026년 신년회/20260120_신년회_041.jpg",
+            "image/2026년 신년회/20260120_신년회_042.jpg",
+            "image/2026년 신년회/20260120_신년회_043.jpg",
+            "image/2026년 신년회/20260120_신년회_044.jpg",
+            "image/2026년 신년회/20260120_신년회_045.jpg",
+            "image/2026년 신년회/20260120_신년회_046.jpg",
+            "image/2026년 신년회/20260120_신년회_047.jpg",
+            "image/2026년 신년회/20260120_신년회_048.jpg",
+            "image/2026년 신년회/20260120_신년회_049.jpg",
+            "image/2026년 신년회/20260120_신년회_050.jpg",
+            "image/2026년 신년회/20260120_신년회_051.jpg",
+            "image/2026년 신년회/20260120_신년회_052.jpg",
+            "image/2026년 신년회/20260120_신년회_053.jpg",
+            "image/2026년 신년회/20260120_신년회_054.jpg",
+            "image/2026년 신년회/20260120_신년회_055.jpg",
+            "image/2026년 신년회/20260120_신년회_056.jpg",
+            "image/2026년 신년회/20260120_신년회_057.jpg",
+            "image/2026년 신년회/20260120_신년회_058.jpg",
+            "image/2026년 신년회/20260120_신년회_059.jpg",
+            "image/2026년 신년회/20260120_신년회_060.jpg",
+            "image/2026년 신년회/20260120_신년회_061.jpg",
+            "image/2026년 신년회/20260120_신년회_062.jpg",
+            "image/2026년 신년회/20260120_신년회_063.jpg",
+            "image/2026년 신년회/20260120_신년회_064.jpg",
+            "image/2026년 신년회/20260120_신년회_065.jpg",
+            "image/2026년 신년회/20260120_신년회_066.jpg",
+            "image/2026년 신년회/20260120_신년회_067.jpg",
+            "image/2026년 신년회/20260120_신년회_068.jpg",
+            "image/2026년 신년회/20260120_신년회_069.jpg",
+            "image/2026년 신년회/20260120_신년회_070.jpg",
+            "image/2026년 신년회/20260120_신년회_071.jpg",
+            "image/2026년 신년회/20260120_신년회_072.jpg",
+            "image/2026년 신년회/20260120_신년회_073.jpg",
+            "image/2026년 신년회/20260120_신년회_074.jpg",
+            "image/2026년 신년회/20260120_신년회_075.jpg",
+            "image/2026년 신년회/20260120_신년회_076.jpg",
+            "image/2026년 신년회/20260120_신년회_077.jpg",
+            "image/2026년 신년회/20260120_신년회_078.jpg",
+            "image/2026년 신년회/20260120_신년회_079.jpg",
+            "image/2026년 신년회/20260120_신년회_080.jpg",
+            "image/2026년 신년회/20260120_신년회_081.jpg",
+            "image/2026년 신년회/20260120_신년회_082.jpg",
+            "image/2026년 신년회/20260120_신년회_083.jpg",
+            "image/2026년 신년회/20260120_신년회_084.jpg",
+            "image/2026년 신년회/20260120_신년회_085.jpg",
+            "image/2026년 신년회/20260120_신년회_086.jpg",
+            "image/2026년 신년회/20260120_신년회_087.jpg",
+            "image/2026년 신년회/20260120_신년회_088.jpg",
+            "image/2026년 신년회/20260120_신년회_089.jpg",
+            "image/2026년 신년회/20260120_신년회_090.jpg",
+            "image/2026년 신년회/20260120_신년회_091.jpg"
+        ];
+
         const ati2025Images = [
             "image/2025년/미디어 (16).jfif",
             "image/2025년/미디어 (17).jfif",
@@ -524,10 +611,10 @@
                 return {
                     ...post,
                     zone: "26년_신년회",
-                    title: "ATI_K 부서별 신년발표회",
-                    description: "ATI-K 신년발표회를 통하여 \ 26년도 목표와 비전을 제시하였습니다.",
+                    title: "2026년 신년식",
+                    description: "ATI-K 신년식을 통하여 2026년도 목표와 비전을 공유하였습니다.",
                     author: "ATI-KOREA",
-                    images: ati2026Images.slice(atiSplitIndex)
+                    images: newYear2026Images
                 };
             }
             if (post.year === "2025" && (post.title === "C구역 파렛트 렉 증설 및 슬로프 도장" || post.title === "ATI_K 부서별 신년발표회")) {
@@ -599,7 +686,7 @@
             const allZonesOption = document.querySelector('#zoneSelect option[value="ALL"]');
             if (allZonesOption) {
                 allZonesOption.textContent = currentSelectedYear === 'ALL'
-                    ? '전체 구역 보기 (전체 연도)'
+                    ? '전체 연도'
                     : `전체 구역 보기 (${currentSelectedYear}년)`;
             }
         }
