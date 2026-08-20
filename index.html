@@ -132,7 +132,7 @@
             <!-- 구역 필터 & 검색어 -->
             <div class="flex items-center gap-3">
                 <select id="zoneSelect" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue font-medium">
-                    <option value="ALL">전체 구역 보기 (전체 연도)</option>
+                    <option value="ALL">전체 연도</option>
                     <option value="A구역 (메인 클린룸)">A구역 (메인 클린룸)</option>
                     <option value="26년_신년회">26년_신년회</option>
                     <option value="25년_신년회">25년_신년회</option>
@@ -599,7 +599,7 @@
             const allZonesOption = document.querySelector('#zoneSelect option[value="ALL"]');
             if (allZonesOption) {
                 allZonesOption.textContent = currentSelectedYear === 'ALL'
-                    ? '전체 구역 보기 (전체 연도)'
+                    ? '전체 연도'
                     : `전체 구역 보기 (${currentSelectedYear}년)`;
             }
         }
