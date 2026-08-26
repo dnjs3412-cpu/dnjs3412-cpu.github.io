@@ -579,6 +579,51 @@
             "image/2026년 신년회/20260120_신년회_091.jpg"
         ];
 
+        const report2021Images = [
+            "image/2021년/3Q 보고회/20210402_3Q보고회_001.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_002.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_003.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_004.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_005.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_006.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_007.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_008.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_009.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_010.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_011.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_012.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_013.jpg",
+            "image/2021년/3Q 보고회/20210402_3Q보고회_014.jpg"
+        ];
+
+        const yearEndDinner2021Images = [
+            "image/2021년/연말회식/20221222_연말회식_001.jpg",
+            "image/2021년/연말회식/20221222_연말회식_002.jpg",
+            "image/2021년/연말회식/20221222_연말회식_003.jpg",
+            "image/2021년/연말회식/20221222_연말회식_004.jpg",
+            "image/2021년/연말회식/20221222_연말회식_005.jpg",
+            "image/2021년/연말회식/20221222_연말회식_006.jpg",
+            "image/2021년/연말회식/20221222_연말회식_007.jpg",
+            "image/2021년/연말회식/20221222_연말회식_008.jpg",
+            "image/2021년/연말회식/20221222_연말회식_009.jpg",
+            "image/2021년/연말회식/20221222_연말회식_010.jpg",
+            "image/2021년/연말회식/20221222_연말회식_011.jpg",
+            "image/2021년/연말회식/20221222_연말회식_012.jpg",
+            "image/2021년/연말회식/20221222_연말회식_013.jpg",
+            "image/2021년/연말회식/20221222_연말회식_014.jpg",
+            "image/2021년/연말회식/20221222_연말회식_015.jpg",
+            "image/2021년/연말회식/20221222_연말회식_016.jpg",
+            "image/2021년/연말회식/20221222_연말회식_017.jpg",
+            "image/2021년/연말회식/20221222_연말회식_018.jpg",
+            "image/2021년/연말회식/20221222_연말회식_019.jpg",
+            "image/2021년/연말회식/20221222_연말회식_020.jpg",
+            "image/2021년/연말회식/20221222_연말회식_021.jpg",
+            "image/2021년/연말회식/20221222_연말회식_022.jpg",
+            "image/2021년/연말회식/20221222_연말회식_023.jpg",
+            "image/2021년/연말회식/20221222_연말회식_024.jpg",
+            "image/2021년/연말회식/20221222_연말회식_025.jpg"
+        ];
+
         const ati2025Images = [
             "image/2025년/미디어 (16).jfif",
             "image/2025년/미디어 (17).jfif",
@@ -643,6 +688,33 @@
         });
         localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
         posts = posts.map(post => ({ ...post, category: inferCategory(post) }));
+
+        if (!posts.some(post => post.id === 2021040201)) {
+            posts.push({
+                id: 2021040201,
+                year: "2021",
+                date: "2021-04-02",
+                zone: "3Q 보고회",
+                category: "presentation",
+                title: "2021년 3Q 보고회",
+                description: "2021년 3Q 보고회 사진 기록입니다.",
+                author: "ATI-KOREA",
+                images: report2021Images
+            });
+        }
+        if (!posts.some(post => post.id === 2021122201)) {
+            posts.push({
+                id: 2021122201,
+                year: "2021",
+                date: "2021-12-22",
+                zone: "연말회식",
+                category: "company-event",
+                title: "2021년 연말회식",
+                description: "2021년 연말회식 사진 기록입니다.",
+                author: "ATI-KOREA",
+                images: yearEndDinner2021Images
+            });
+        }
         localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
         let isAdmin = localStorage.getItem('ulvac_is_admin') === 'true';
         let currentSelectedYear = 'ALL';
