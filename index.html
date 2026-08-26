@@ -285,7 +285,7 @@
                         <option value="new-year">신년식</option>
                         <option value="presentation">부서별 발표회</option>
                         <option value="birthday">생일잔치</option>
-                        <option value="workshop">야유회·워크숍</option>
+                        <option value="workshop">회식·워크숍</option>
                         <option value="sports">체육대회</option>
                         <option value="company-event">회사 행사</option>
                         <option value="facility">시설·현장 기록</option>
@@ -324,7 +324,7 @@
             { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
             { id: 'presentation', name: '부서별 발표회', icon: 'fa-person-chalkboard', color: 'from-blue-500 to-cyan-500' },
             { id: 'birthday', name: '생일잔치', icon: 'fa-cake-candles', color: 'from-pink-500 to-rose-500' },
-            { id: 'workshop', name: '야유회·워크숍', icon: 'fa-people-group', color: 'from-emerald-500 to-teal-500' },
+            { id: 'workshop', name: '회식·워크숍', icon: 'fa-people-group', color: 'from-emerald-500 to-teal-500' },
             { id: 'sports', name: '체육대회', icon: 'fa-medal', color: 'from-violet-500 to-purple-500' },
             { id: 'company-event', name: '회사 행사', icon: 'fa-calendar-days', color: 'from-indigo-500 to-blue-600' },
             { id: 'facility', name: '시설·현장 기록', icon: 'fa-building', color: 'from-slate-500 to-slate-700' },
@@ -337,7 +337,7 @@
             if (text.includes('발표회')) return 'presentation';
             if (text.includes('신년')) return 'new-year';
             if (text.includes('생일')) return 'birthday';
-            if (text.includes('워크숍') || text.includes('야유회')) return 'workshop';
+            if (text.includes('워크숍') || text.includes('야유회') || text.includes('회식')) return 'workshop';
             if (text.includes('체육')) return 'sports';
             if (text.includes('구역') || text.includes('시설') || text.includes('클린룸') || text.includes('창고')) return 'facility';
             return 'other';
@@ -708,13 +708,14 @@
                 year: "2021",
                 date: "2021-12-22",
                 zone: "연말회식",
-                category: "company-event",
+                category: "workshop",
                 title: "2021년 연말회식",
                 description: "2021년 연말회식 사진 기록입니다.",
                 author: "ATI-KOREA",
                 images: yearEndDinner2021Images
             });
         }
+        posts = posts.map(post => post.id === 2021122201 ? { ...post, category: "workshop" } : post);
         localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
         let isAdmin = localStorage.getItem('ulvac_is_admin') === 'true';
         let currentSelectedYear = 'ALL';
