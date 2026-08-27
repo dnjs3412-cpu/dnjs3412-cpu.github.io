@@ -579,6 +579,67 @@
             "image/2026년 신년회/20260120_신년회_091.jpg"
         ];
 
+        const newYear2025LocalImages = [
+            "image/2025년/신년회/20250121_신년회_001.jfif",
+            "image/2025년/신년회/20250121_신년회_002.jfif",
+            "image/2025년/신년회/20250121_신년회_003.jfif",
+            "image/2025년/신년회/20250121_신년회_004.jfif",
+            "image/2025년/신년회/20250121_신년회_005.jfif",
+            "image/2025년/신년회/20250121_신년회_006.jfif",
+            "image/2025년/신년회/20250121_신년회_007.jfif",
+            "image/2025년/신년회/20250121_신년회_008.jfif",
+            "image/2025년/신년회/20250121_신년회_009.jfif",
+            "image/2025년/신년회/20250121_신년회_010.jfif",
+            "image/2025년/신년회/20250121_신년회_011.jfif",
+            "image/2025년/신년회/20250121_신년회_012.jfif",
+            "image/2025년/신년회/20250121_신년회_013.jfif",
+            "image/2025년/신년회/20250121_신년회_014.jfif",
+            "image/2025년/신년회/20250121_신년회_015.jfif",
+            "image/2025년/신년회/20250121_신년회_016.jfif",
+            "image/2025년/신년회/20250121_신년회_017.jfif",
+            "image/2025년/신년회/20250121_신년회_018.jfif",
+            "image/2025년/신년회/20250121_신년회_019.jfif",
+            "image/2025년/신년회/20250121_신년회_020.jfif",
+            "image/2025년/신년회/20250121_신년회_021.jfif"
+        ];
+
+        const ulGaia2025Images = [
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_001.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_002.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_003.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_004.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_005.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_006.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_007.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_008.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_009.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_010.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_011.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_012.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_013.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_014.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_015.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_016.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_017.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_018.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_019.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_020.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_021.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_022.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_023.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_024.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_025.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_026.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_027.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_028.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_029.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_030.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_031.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_032.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_033.jpg",
+            "image/2025년/UL-GAIA/20250825_UL-GAIA_034.jpg"
+        ];
+
         const education2024Images = [
             "image/2024년/교육공유회/20240130_교육공유회_001.png",
             "image/2024년/교육공유회/20240130_교육공유회_002.png",
@@ -1218,6 +1279,14 @@
                 images: yearEndDinner2021Images
             });
         }
+        posts = posts.filter(post => !(post.year === "2025" && (post.id === 3 || post.id === 4)));
+        if (!posts.some(post => post.id === 2025012101)) {
+            posts.push({ id: 2025012101, year: "2025", date: "2025-01-21", zone: "신년회", category: "new-year", title: "2025년 신년회", description: "2025년 신년회 사진 기록입니다.", author: "ATI-KOREA", images: newYear2025LocalImages });
+        }
+        if (!posts.some(post => post.id === 2025082501)) {
+            posts.push({ id: 2025082501, year: "2025", date: "2025-08-25", zone: "UL-GAIA", category: "company-event", title: "2025년 UL-GAIA", description: "2025년 UL-GAIA 행사 사진 기록입니다.", author: "ATI-KOREA", images: ulGaia2025Images });
+        }
+
         if (!posts.some(post => post.id === 2024013001)) {
             posts.push({ id: 2024013001, year: "2024", date: "2024-01-30", zone: "교육공유회", category: "presentation", title: "2024년 교육공유회", description: "2024년 교육공유회 사진 기록입니다.", author: "ATI-KOREA", images: education2024Images });
         }
