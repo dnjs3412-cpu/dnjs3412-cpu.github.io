@@ -286,7 +286,6 @@
                         <option value="presentation">부서별 발표회</option>
                         <option value="workshop">회식·워크숍</option>
                         <option value="company-event">회사 행사</option>
-                        <option value="other">기타 기록</option>
                     </select>
                 </div>
 
@@ -319,15 +318,15 @@
             { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
             { id: 'presentation', name: '부서별 발표회', icon: 'fa-person-chalkboard', color: 'from-blue-500 to-cyan-500' },
             { id: 'workshop', name: '회식·워크숍', icon: 'fa-people-group', color: 'from-emerald-500 to-teal-500' },
-            { id: 'company-event', name: '회사 행사', icon: 'fa-calendar-days', color: 'from-indigo-500 to-blue-600' },
-            { id: 'other', name: '기타 기록', icon: 'fa-folder', color: 'from-cyan-500 to-brand-blue' }
+            { id: 'company-event', name: '회사 행사', icon: 'fa-calendar-days', color: 'from-indigo-500 to-blue-600' }
         ];
 
         function inferCategory(post) {
             const legacyCategoryMap = {
                 birthday: 'company-event',
                 sports: 'company-event',
-                facility: 'other'
+                facility: 'company-event',
+                other: 'company-event'
             };
             if (post.category) return legacyCategoryMap[post.category] || post.category;
             const text = `${post.title || ''} ${post.zone || ''} ${post.description || ''}`;
@@ -335,7 +334,7 @@
             if (text.includes('신년')) return 'new-year';
             if (text.includes('워크숍') || text.includes('야유회') || text.includes('회식')) return 'workshop';
             if (text.includes('생일') || text.includes('체육')) return 'company-event';
-            return 'other';
+            return 'company-event';
         }
 
         // 초깃값 데이터 설정 (기본 예시 데이터)
