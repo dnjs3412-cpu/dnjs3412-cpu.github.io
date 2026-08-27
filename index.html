@@ -138,9 +138,10 @@
                     <option value="2023">2023년</option>
                     <option value="2022">2022년</option>
                     <option value="2021">2021년</option>
-                    <option value="2020">2020년</option>
-                    <option value="2019">2019년</option>
-                    <option value="2018">2018년</option>
+                    <option value="2011">2011년</option>
+                    <option value="2009">2009년</option>
+                    <option value="2008">2008년</option>
+                    <option value="2006">2006년</option>
                 </select>
 
                 <div class="relative flex-1 sm:w-64">
@@ -283,11 +284,8 @@
                     <select id="upCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
                         <option value="new-year">신년식</option>
                         <option value="presentation">부서별 발표회</option>
-                        <option value="birthday">생일잔치</option>
                         <option value="workshop">회식·워크숍</option>
-                        <option value="sports">체육대회</option>
                         <option value="company-event">회사 행사</option>
-                        <option value="facility">시설·현장 기록</option>
                         <option value="other">기타 기록</option>
                     </select>
                 </div>
@@ -316,29 +314,27 @@
 
     <!-- 스크립트 로직 -->
     <script>
-        const START_YEAR = 2018;
-        const END_YEAR = 2026;
-        const ARCHIVE_YEARS = Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, index) => String(END_YEAR - index));
+        const ARCHIVE_YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2011", "2009", "2008", "2006"];
         const EVENT_CATEGORIES = [
             { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
             { id: 'presentation', name: '부서별 발표회', icon: 'fa-person-chalkboard', color: 'from-blue-500 to-cyan-500' },
-            { id: 'birthday', name: '생일잔치', icon: 'fa-cake-candles', color: 'from-pink-500 to-rose-500' },
             { id: 'workshop', name: '회식·워크숍', icon: 'fa-people-group', color: 'from-emerald-500 to-teal-500' },
-            { id: 'sports', name: '체육대회', icon: 'fa-medal', color: 'from-violet-500 to-purple-500' },
             { id: 'company-event', name: '회사 행사', icon: 'fa-calendar-days', color: 'from-indigo-500 to-blue-600' },
-            { id: 'facility', name: '시설·현장 기록', icon: 'fa-building', color: 'from-slate-500 to-slate-700' },
             { id: 'other', name: '기타 기록', icon: 'fa-folder', color: 'from-cyan-500 to-brand-blue' }
         ];
 
         function inferCategory(post) {
-            if (post.category) return post.category;
+            const legacyCategoryMap = {
+                birthday: 'company-event',
+                sports: 'company-event',
+                facility: 'other'
+            };
+            if (post.category) return legacyCategoryMap[post.category] || post.category;
             const text = `${post.title || ''} ${post.zone || ''} ${post.description || ''}`;
             if (text.includes('발표회')) return 'presentation';
             if (text.includes('신년')) return 'new-year';
-            if (text.includes('생일')) return 'birthday';
             if (text.includes('워크숍') || text.includes('야유회') || text.includes('회식')) return 'workshop';
-            if (text.includes('체육')) return 'sports';
-            if (text.includes('구역') || text.includes('시설') || text.includes('클린룸') || text.includes('창고')) return 'facility';
+            if (text.includes('생일') || text.includes('체육')) return 'company-event';
             return 'other';
         }
 
