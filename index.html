@@ -132,7 +132,6 @@
             <div class="flex items-center gap-3">
                 <select id="zoneSelect" onchange="selectYearFromDropdown()" aria-label="사진 카테고리 연도" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-blue font-medium">
                     <option value="ALL">전체 연도</option>
-                    <option value="2027">2027년</option>
                     <option value="2026">2026년</option>
                     <option value="2025">2025년</option>
                     <option value="2024">2024년</option>
@@ -318,7 +317,7 @@
     <!-- 스크립트 로직 -->
     <script>
         const START_YEAR = 2018;
-        const END_YEAR = 2027;
+        const END_YEAR = 2026;
         const ARCHIVE_YEARS = Array.from({ length: END_YEAR - START_YEAR + 1 }, (_, index) => String(END_YEAR - index));
         const EVENT_CATEGORIES = [
             { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
@@ -1212,6 +1211,21 @@
             "image/2025년/미디어 (36).jfif"
         ];
 
+        const monthlyMeeting2023Images = [
+            "image/2023년/월간조례/20230703_월간조례_001.jpg",
+            "image/2023년/월간조례/20230703_월간조례_002.jpg",
+            "image/2023년/월간조례/20230703_월간조례_003.jpg",
+            "image/2023년/월간조례/20230703_월간조례_004.jpg",
+            "image/2023년/월간조례/20230703_월간조례_005.jpg",
+            "image/2023년/월간조례/20230703_월간조례_006.jpg",
+            "image/2023년/월간조례/20230703_월간조례_007.jpg",
+            "image/2023년/월간조례/20230703_월간조례_008.jpg",
+            "image/2023년/월간조례/20230703_월간조례_009.jpg",
+            "image/2023년/월간조례/20230703_월간조례_010.jpg",
+            "image/2023년/월간조례/20230703_월간조례_011.jpg",
+            "image/2023년/월간조례/20230703_월간조례_012.jpg"
+        ];
+
         // 로컬 스토리지 상태 및 앱 변수
         let posts = JSON.parse(localStorage.getItem('ulvac_dashboard_posts')) || initialPosts;
         const atiSplitIndex = Math.ceil(ati2026Images.length / 2);
@@ -1297,6 +1311,9 @@
             posts.push({ id: 2024123001, year: "2024", date: "2024-12-30", zone: "연말시상식", category: "company-event", title: "2024년 연말시상식", description: "2024년 연말시상식 사진 기록입니다.", author: "ATI-KOREA", images: awards2024Images });
         }
 
+        if (!posts.some(post => post.id === 2023070301)) {
+            posts.push({ id: 2023070301, year: "2023", date: "2023-07-03", zone: "월간조례", category: "company-event", title: "2023년 월간조례", description: "2023년 월간조례 사진 기록입니다.", author: "ATI-KOREA", images: monthlyMeeting2023Images });
+        }
         if (!posts.some(post => post.id === 2023020701)) {
             posts.push({ id: 2023020701, year: "2023", date: "2023-02-07", zone: "디스플레이학회", category: "company-event", title: "2023년 디스플레이학회", description: "2023년 디스플레이학회 사진 기록입니다.", author: "ATI-KOREA", images: displayConference2023Images });
         }
