@@ -311,6 +311,8 @@
         </div>
     </div>
 
+    <script src="legacy-archive-data.js"></script>
+
     <!-- 스크립트 로직 -->
     <script>
         const ARCHIVE_YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2011", "2009", "2008", "2006"];
@@ -1263,6 +1265,12 @@
         localStorage.setItem('ulvac_dashboard_posts', JSON.stringify(posts));
         posts = posts.map(post => ({ ...post, category: inferCategory(post) }));
 
+        legacyArchivePosts.forEach(post => {
+            if (!posts.some(existingPost => existingPost.id === post.id)) {
+                posts.push(post);
+            }
+        });
+
         if (!posts.some(post => post.id === 2021040201)) {
             posts.push({
                 id: 2021040201,
@@ -1498,7 +1506,9 @@
                 const postCount = yearPosts.length;
                 
                 // 대표 썸네일 추출
-                const latestImg = yearPosts[0]?.images[0] || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
+                const latestImg = yr === '2026'
+                    ? newYear2026Images[0]
+                    : yearPosts[0]?.images[0] || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
 
                 return `
                     <div onclick="openYearDetail('${yr}')" class="archive-card bg-white rounded-2xl overflow-hidden border border-slate-200 cursor-pointer group flex flex-col justify-between">
@@ -1782,3 +1792,4 @@
     </script>
 </body>
 </html>
+
