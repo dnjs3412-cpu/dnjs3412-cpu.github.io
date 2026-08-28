@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>한국알박 - 사진 기록 관리 시스템</title>
+    <script>
+        try {
+            if (sessionStorage.getItem('ati_photo_archive_authenticated') === 'true') {
+                document.documentElement.classList.add('archive-authenticated');
+            }
+        } catch (error) {
+            // sessionStorage를 사용할 수 없는 환경에서는 로그인 화면을 유지합니다.
+        }
+    </script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons CDN -->
@@ -35,6 +44,20 @@
     </script>
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        html:not(.archive-authenticated) body > :not(#siteLoginGate) { display: none !important; }
+        html.archive-authenticated #siteLoginGate { display: none !important; }
+        #siteLoginGate {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(0, 168, 204, 0.18), transparent 32%),
+                linear-gradient(145deg, #002B49 0%, #071827 58%, #0F172A 100%);
+        }
+        .login-card { width: min(100%, 420px); }
         .glass-header { background: rgba(0, 43, 73, 0.95); backdrop-filter: blur(10px); }
         .archive-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
         .archive-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -6px rgba(0, 43, 73, 0.12); }
@@ -45,6 +68,27 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-brand-blue selection:text-white">
+
+    <!-- 사이트 최초 접속 로그인 -->
+    <section id="siteLoginGate" aria-labelledby="siteLoginTitle">
+        <div class="login-card rounded-3xl border border-white/15 bg-white/95 p-6 sm:p-8 shadow-2xl shadow-black/30 backdrop-blur">
+            <div class="flex items-center gap-3 mb-7">
+                <div class="w-12 h-12 shrink-0 bg-gradient-to-tr from-brand-blue to-brand-accent rounded-xl flex items-center justify-center font-en font-extrabold text-2xl tracking-tighter text-white shadow-lg">UL</div>
+                <div>
+                    <p class="font-en font-extrabold tracking-wider text-brand-navy text-xl leading-none">한국알박</p>
+                    <p class="font-en text-xs font-bold tracking-[0.2em] text-brand-accent mt-1.5">PHOTO ARCHIVE</p>
+                </div>
+            </div>
+            <h1 id="siteLoginTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900">ATI 사진 기록 관리 시스템</h1>
+            <p class="mt-2 text-sm text-slate-500">ATI 비밀번호를 입력하세요</p>
+            <form id="siteLoginForm" class="mt-6" novalidate>
+                <label for="sitePassword" class="block text-sm font-semibold text-slate-700 mb-2">비밀번호</label>
+                <input type="password" id="sitePassword" autocomplete="current-password" inputmode="numeric" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/10" placeholder="비밀번호 입력">
+                <p id="siteLoginError" class="hidden mt-3 text-sm font-medium text-red-600" role="alert" aria-live="polite"></p>
+                <button type="submit" class="mt-5 w-full rounded-xl bg-gradient-to-r from-brand-blue to-brand-accent px-4 py-3 text-base font-bold text-white shadow-lg shadow-brand-blue/20 transition hover:brightness-110 active:scale-[0.99]">확인</button>
+            </form>
+        </div>
+    </section>
 
     <!-- 글로벌 네비게이션 바 (한국알박 스타일 + 사진 관리 대시보드 메뉴 추가) -->
     <header class="glass-header text-white sticky top-0 z-40 border-b border-slate-800 shadow-md">
@@ -313,6 +357,51 @@
 
     <script src="legacy-archive-data.js"></script>\n\n    <!-- 스크립트 로직 -->
     <script>
+        // GitHub Pages용 탭 단위 로그인
+        const SITE_ACCESS_PASSWORD = '9571';
+        const SITE_AUTH_SESSION_KEY = 'ati_photo_archive_authenticated';
+
+        function initializeSiteLogin() {
+            const loginForm = document.getElementById('siteLoginForm');
+            const passwordInput = document.getElementById('sitePassword');
+            const errorMessage = document.getElementById('siteLoginError');
+
+            if (!loginForm || !passwordInput || !errorMessage) return;
+
+            if (!document.documentElement.classList.contains('archive-authenticated')) {
+                window.setTimeout(() => passwordInput.focus(), 0);
+            }
+
+            passwordInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    loginForm.requestSubmit();
+                }
+            });
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                if (passwordInput.value === SITE_ACCESS_PASSWORD) {
+                    try {
+                        sessionStorage.setItem(SITE_AUTH_SESSION_KEY, 'true');
+                    } catch (error) {
+                        // 저장이 차단되어도 현재 화면에서는 로그인할 수 있게 합니다.
+                    }
+                    document.documentElement.classList.add('archive-authenticated');
+                    errorMessage.classList.add('hidden');
+                    errorMessage.textContent = '';
+                    passwordInput.value = '';
+                    return;
+                }
+
+                errorMessage.textContent = '비밀번호가 올바르지 않습니다. 다시 입력해주세요.';
+                errorMessage.classList.remove('hidden');
+                passwordInput.select();
+            });
+        }
+
+        initializeSiteLogin();
         const ARCHIVE_YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2011", "2009", "2008", "2006"];
         const EVENT_CATEGORIES = [
             { id: 'new-year', name: '신년식', icon: 'fa-sun', color: 'from-amber-400 to-orange-500' },
