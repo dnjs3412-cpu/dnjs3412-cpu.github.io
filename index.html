@@ -1318,7 +1318,7 @@
         posts = posts
             .filter(post => !(post.year === "2026" && post.title === "ATI"))
             .map(post => {
-            if (post.year === "2026" && post.title === "ATI_K 부서별 신년발표회") {
+            if (post.year === "2026" && (post.title === "ATI_K 부서별 신년발표회" || post.title === "2026년 신년식")) {
                 return {
                     ...post,
                     zone: "26년_신년회",
