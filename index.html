@@ -1314,11 +1314,11 @@
         let posts = JSON.parse(localStorage.getItem('ulvac_dashboard_posts')) || initialPosts;
         const atiSplitIndex = Math.ceil(ati2026Images.length / 2);
         const ati2025SplitIndex = Math.ceil(ati2025Images.length / 2);
-        posts = posts.map(post => {
-            if (post.year === "2026" && post.title === "ATI") {
-                return { ...post, images: ati2026Images.slice(0, atiSplitIndex) };
-            }
-            if (post.year === "2026" && (post.title === "ATI" || post.title === "ATI_K 부서별 신년발표회")) {
+        // 삭제된 예전 2026 ATI 사진 게시글은 저장된 브라우저 데이터에서도 제외합니다.
+        posts = posts
+            .filter(post => !(post.year === "2026" && post.title === "ATI"))
+            .map(post => {
+            if (post.year === "2026" && post.title === "ATI_K 부서별 신년발표회") {
                 return {
                     ...post,
                     zone: "26년_신년회",
