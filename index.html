@@ -254,16 +254,23 @@
 
     <!-- MODAL 1: 사진 원본 크게 보기 모달 (Lightbox) -->
     <div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <button onclick="closeImageModal()" class="absolute top-5 right-5 text-white/80 hover:text-white p-2 text-2xl font-bold z-10 transition-colors">
+        <button onclick="closeImageModal()" class="absolute top-5 right-5 text-white/80 hover:text-white p-2 text-2xl font-bold z-20 transition-colors" aria-label="사진 닫기">
             ✕
         </button>
-        <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
-            <img id="modalImg" src="" alt="확대 이미지" class="max-h-[75vh] w-auto object-contain rounded-lg shadow-2xl border border-white/10">
+        <button id="modalPrevBtn" onclick="showPreviousImage()" class="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/55 hover:bg-brand-blue text-white text-3xl flex items-center justify-center shadow-xl border border-white/20 transition-all" aria-label="이전 사진">
+            ‹
+        </button>
+        <div class="max-w-5xl max-h-[90vh] flex flex-col items-center px-12 sm:px-20">
+            <img id="modalImg" src="" alt="확대 이미지" class="max-h-[75vh] w-auto object-contain rounded-lg shadow-2xl border border-white/10 select-none">
             <div class="mt-4 text-center text-white space-y-1">
                 <h3 id="modalCaption" class="text-lg font-bold"></h3>
                 <p id="modalSub" class="text-sm text-slate-300 font-light"></p>
+                <p id="modalCounter" class="text-xs text-brand-accent font-semibold pt-1"></p>
             </div>
         </div>
+        <button id="modalNextBtn" onclick="showNextImage()" class="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/55 hover:bg-brand-blue text-white text-3xl flex items-center justify-center shadow-xl border border-white/20 transition-all" aria-label="다음 사진">
+            ›
+        </button>
     </div>
 
     <!-- MODAL 2: 관리자 로그인 모달 -->
@@ -1685,15 +1692,15 @@
 
                 if (imgs.length === 1) {
                     imageGrid = `
-                        <div class="rounded-xl overflow-hidden cursor-pointer" onclick="openImageModal('${imgs[0]}', '${post.title}', '${post.date}')">
+                        <div class="rounded-xl overflow-hidden cursor-pointer" onclick="openImageModal('${post.id}', 0)">
                             <img src="${imgs[0]}" class="w-full max-h-96 object-cover hover:opacity-95 transition-opacity">
                         </div>
                     `;
                 } else if (imgs.length === 2) {
                     imageGrid = `
                         <div class="grid grid-cols-2 gap-2">
-                            ${imgs.map(img => `
-                                <div class="rounded-xl overflow-hidden cursor-pointer h-56" onclick="openImageModal('${img}', '${post.title}', '${post.date}')">
+                            ${imgs.map((img, imageIndex) => `
+                                <div class="rounded-xl overflow-hidden cursor-pointer h-56" onclick="openImageModal('${post.id}', ${imageIndex})">
                                     <img src="${img}" class="w-full h-full object-cover hover:opacity-95 transition-opacity">
                                 </div>
                             `).join('')}
@@ -1702,8 +1709,8 @@
                 } else {
                     imageGrid = `
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            ${imgs.map(img => `
-                                <div class="relative rounded-xl overflow-hidden cursor-pointer bg-slate-100" onclick="openImageModal('${img}', '${post.title}', '${post.date}')">
+                            ${imgs.map((img, imageIndex) => `
+                                <div class="relative rounded-xl overflow-hidden cursor-pointer bg-slate-100" onclick="openImageModal('${post.id}', ${imageIndex})">
                                     <img src="${img}" class="w-full aspect-[4/3] object-cover hover:opacity-95 transition-opacity" loading="lazy">
                                 </div>
                             `).join('')}
@@ -1750,17 +1757,69 @@
             }).join('');
         }
 
-        // 이미지 모달 열기
-        function openImageModal(imgSrc, title, date) {
-            document.getElementById('modalImg').src = imgSrc;
-            document.getElementById('modalCaption').innerText = title;
-            document.getElementById('modalSub').innerText = `촬영 및 등록일자: ${date}`;
+        // 사진 갤러리 모달
+        let lightboxPost = null;
+        let lightboxIndex = 0;
+        let lightboxTouchStartX = 0;
+
+        function openImageModal(postId, imageIndex = 0) {
+            lightboxPost = posts.find(post => String(post.id) === String(postId));
+            if (!lightboxPost || !lightboxPost.images.length) return;
+            lightboxIndex = Math.max(0, Math.min(imageIndex, lightboxPost.images.length - 1));
+            updateLightbox();
             document.getElementById('imageModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateLightbox() {
+            const total = lightboxPost.images.length;
+            document.getElementById('modalImg').src = lightboxPost.images[lightboxIndex];
+            document.getElementById('modalCaption').innerText = lightboxPost.title;
+            document.getElementById('modalSub').innerText = `촬영 및 등록일자: ${lightboxPost.date}`;
+            document.getElementById('modalCounter').innerText = `${lightboxIndex + 1} / ${total}`;
+            const showNavigation = total > 1;
+            document.getElementById('modalPrevBtn').classList.toggle('hidden', !showNavigation);
+            document.getElementById('modalNextBtn').classList.toggle('hidden', !showNavigation);
+        }
+
+        function showPreviousImage() {
+            if (!lightboxPost || lightboxPost.images.length < 2) return;
+            lightboxIndex = (lightboxIndex - 1 + lightboxPost.images.length) % lightboxPost.images.length;
+            updateLightbox();
+        }
+
+        function showNextImage() {
+            if (!lightboxPost || lightboxPost.images.length < 2) return;
+            lightboxIndex = (lightboxIndex + 1) % lightboxPost.images.length;
+            updateLightbox();
         }
 
         function closeImageModal() {
             document.getElementById('imageModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            lightboxPost = null;
         }
+
+        document.addEventListener('keydown', event => {
+            if (document.getElementById('imageModal').classList.contains('hidden')) return;
+            if (event.key === 'ArrowLeft') showPreviousImage();
+            if (event.key === 'ArrowRight') showNextImage();
+            if (event.key === 'Escape') closeImageModal();
+        });
+
+        document.getElementById('imageModal').addEventListener('click', event => {
+            if (event.target.id === 'imageModal') closeImageModal();
+        });
+
+        document.getElementById('modalImg').addEventListener('touchstart', event => {
+            lightboxTouchStartX = event.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.getElementById('modalImg').addEventListener('touchend', event => {
+            const distance = event.changedTouches[0].screenX - lightboxTouchStartX;
+            if (Math.abs(distance) < 50) return;
+            distance > 0 ? showPreviousImage() : showNextImage();
+        }, { passive: true });
 
         // 관리자 인증 모달 처리
         function toggleAuthModal() {
