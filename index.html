@@ -131,14 +131,18 @@
                 </nav>
 
                 <!-- 관리자 인증 영역 -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button type="button" onclick="showDirectorMessage()" class="md:hidden inline-flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-blue/80 px-2.5 py-2 text-xs font-bold text-white transition hover:bg-brand-blue" aria-label="연구개발 소장님 인사말 열기">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                        <span class="hidden sm:inline">연구개발</span>
+                    </button>
                     <div id="adminBadge" class="hidden flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs px-3 py-1.5 rounded-full font-medium">
                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                         관리자 권한 활성
                     </div>
                     <button id="authBtn" onclick="toggleAuthModal()" class="flex items-center gap-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg border border-slate-700 transition-all font-medium">
                         <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <span id="authBtnText">관리자 로그인</span>
+                        <span id="authBtnText" class="hidden sm:inline">관리자 로그인</span>
                     </button>
                 </div>
             </div>
