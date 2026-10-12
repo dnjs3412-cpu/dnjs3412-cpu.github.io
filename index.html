@@ -117,7 +117,7 @@
                         </button>
                         <div class="absolute left-1/2 top-full z-50 hidden w-44 -translate-x-1/2 pt-2 group-hover:block group-focus-within:block">
                             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-700 shadow-xl">
-                                <a href="#director-message" class="block px-4 py-2.5 hover:bg-brand-blue hover:text-white transition-colors">소장님 인사말</a>
+                                <a href="#director-message" onclick="showDirectorMessage(); return false;" class="block px-4 py-2.5 hover:bg-brand-blue hover:text-white transition-colors">소장님 인사말</a>
                                 <a href="#research-institute" class="block px-4 py-2.5 hover:bg-brand-blue hover:text-white transition-colors">연구소 소개</a>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
     </header>
 
     <!-- 메인 비주얼 배너 -->
-    <section class="bg-gradient-to-r from-brand-navy via-slate-900 to-brand-navy text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative overflow-hidden">
+    <section id="mainHeroSection" class="bg-gradient-to-r from-brand-navy via-slate-900 to-brand-navy text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#00A8CC_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
@@ -168,8 +168,58 @@
         </div>
     </section>
 
+    <!-- 연구소장 인사말 -->
+    <section id="directorMessageSection" class="hidden flex-1 bg-[#effdfb]">
+        <div class="relative overflow-hidden bg-gradient-to-br from-[#e4fbf8] via-[#d9f8f3] to-[#cbf2ec]">
+            <div class="absolute -left-24 top-12 h-72 w-72 rounded-full bg-white/35 blur-2xl"></div>
+            <div class="absolute bottom-0 right-0 font-en text-[13rem] font-extrabold leading-none text-white/20 select-none" aria-hidden="true">ATI</div>
+            <div class="relative mx-auto grid min-h-[590px] max-w-7xl grid-cols-1 items-center gap-8 px-6 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
+                <div class="z-10 max-w-3xl">
+                    <p class="font-en text-sm font-extrabold tracking-[0.18em] text-brand-blue">RESEARCH INSTITUTE DIRECTOR MESSAGE</p>
+                    <h1 class="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+                        기술 혁신으로 미래를 준비하는<br class="hidden sm:block">
+                        ATI 연구소입니다.
+                    </h1>
+                    <p class="mt-8 text-lg font-semibold leading-relaxed text-slate-700 sm:text-xl">
+                        ATI 연구소 홈페이지를 방문해 주셔서 진심으로 감사드립니다.
+                    </p>
+                    <button onclick="document.getElementById('directorMessageBody').scrollIntoView({ behavior: 'smooth' })" class="mt-9 inline-flex items-center gap-2 rounded-full bg-brand-blue px-6 py-3 text-sm font-bold text-white shadow-lg shadow-brand-blue/20 transition hover:bg-brand-navy">
+                        인사말 보기
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="relative mx-auto flex w-full max-w-md items-end justify-center self-end">
+                    <div class="absolute inset-x-8 bottom-6 h-16 rounded-full bg-brand-blue/15 blur-2xl"></div>
+                    <img src="image/research/director.png" alt="ATI 연구소장" class="relative aspect-square w-full rounded-full border-[10px] border-white/45 object-cover object-top shadow-2xl shadow-brand-navy/20">
+                </div>
+            </div>
+        </div>
+
+        <div id="directorMessageBody" class="mx-auto max-w-5xl px-6 py-16 sm:py-20 lg:px-8">
+            <div class="rounded-3xl border border-emerald-100 bg-white/85 p-7 shadow-sm backdrop-blur sm:p-12">
+                <span class="inline-flex rounded-full bg-brand-blue/10 px-4 py-1.5 text-xs font-bold tracking-wider text-brand-blue">소장님 인사말</span>
+                <h2 class="mt-6 text-2xl font-extrabold leading-snug text-slate-900 sm:text-3xl">끊임없는 연구와 도전으로 새로운 가치를 만들어가겠습니다.</h2>
+                <div class="mt-8 space-y-6 text-[15px] leading-8 text-slate-600 sm:text-base">
+                    <p>ATI 연구소는 축적된 기술과 경험을 바탕으로 고객의 요구에 맞는 연구개발과 기술 혁신을 지속하고 있습니다.</p>
+                    <p>변화하는 산업 환경에 능동적으로 대응하고, 현장과 긴밀하게 소통하며 더욱 안전하고 효율적인 기술과 제품을 제공하겠습니다.</p>
+                    <p>사람과 기술이 함께 성장하는 연구 문화를 만들고, 미래 경쟁력을 높일 수 있는 핵심 기술 확보에 최선을 다하겠습니다.</p>
+                    <p>ATI 연구소의 도전과 성장에 변함없는 관심과 성원을 부탁드립니다.</p>
+                </div>
+                <div class="mt-12 flex flex-col items-end border-t border-slate-200 pt-7">
+                    <p class="text-sm text-slate-500">ATI 연구소장</p>
+                    <p class="mt-1 text-xl font-extrabold text-slate-900">성명 추후 입력</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <button onclick="resetToHome()" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:border-brand-blue hover:text-brand-blue">
+                    <span>←</span> 사진기록 대시보드로 돌아가기
+                </button>
+            </div>
+        </div>
+    </section>
+
     <!-- 메인 컨텐츠 영역 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    <main id="archiveMain" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
 
         <!-- 브레드크럼 (현재 위치) -->
         <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6 font-medium">
@@ -1515,7 +1565,17 @@
             renderView();
         }
 
+        function showDirectorMessage() {
+            document.getElementById('mainHeroSection').classList.add('hidden');
+            document.getElementById('archiveMain').classList.add('hidden');
+            document.getElementById('directorMessageSection').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function resetToHome() {
+            document.getElementById('directorMessageSection').classList.add('hidden');
+            document.getElementById('mainHeroSection').classList.remove('hidden');
+            document.getElementById('archiveMain').classList.remove('hidden');
             currentSelectedYear = 'ALL';
             selectedYearDetail = null;
             selectedMonth = null;
