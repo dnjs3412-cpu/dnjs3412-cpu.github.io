@@ -108,7 +108,20 @@
                 <!-- 데스크탑 주 메뉴 (한국알박 헤더 스타일 반영) -->
                 <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-300">
                     <a href="#" class="hover:text-white transition-colors">ATI 사진</a>
-                    <a href="#" class="hover:text-white transition-colors">월별소식지</a>
+                    <div class="relative group">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-white transition-colors py-3" aria-haspopup="true">
+                            연구개발
+                            <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute left-1/2 top-full z-50 hidden w-44 -translate-x-1/2 pt-2 group-hover:block group-focus-within:block">
+                            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-700 shadow-xl">
+                                <a href="#director-message" class="block px-4 py-2.5 hover:bg-brand-blue hover:text-white transition-colors">소장님 인사말</a>
+                                <a href="#research-institute" class="block px-4 py-2.5 hover:bg-brand-blue hover:text-white transition-colors">연구소 소개</a>
+                            </div>
+                        </div>
+                    </div>
                     <a href="#" class="hover:text-white transition-colors">공지사항</a>
                     <!-- 추가된 혁신 메뉴 -->
                     <a href="#" onclick="resetToHome(); return false;" class="text-white bg-brand-blue/80 hover:bg-brand-blue px-3.5 py-2 rounded-full font-semibold border border-brand-accent/30 flex items-center gap-2 shadow-sm transition-all">
